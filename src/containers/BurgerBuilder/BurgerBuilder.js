@@ -3,6 +3,13 @@ import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 
+const INGREDIENTS_PRICES = {
+    salad: 0.5,
+    cheese: 0.3,
+    meat: 1.35,
+    bacon: 0.7
+};
+
 class BurgerBuilder extends Component {
 
     constructor (props) {
@@ -13,15 +20,50 @@ class BurgerBuilder extends Component {
                 cheese: 0,
                 bacon: 0,
                 meat: 0
-            }
+            },
+            totalPrice: 0
         };
+    }
+
+    addIngredientHandler = (type) => {
+        const oldIngredientCount = this.state.ingredients[type];
+        const updatedIngredientCount = oldIngredientCount + 1;
+        const updatedIngredients = {...this.state.ingredients};
+        updatedIngredients[type] = updatedIngredientCount;
+
+        const priceAddition = INGREDIENTS_PRICES[type];
+        const oldPrice = this.state.totalPrice;
+        const updatedPrice = oldPrice + priceAddition;
+
+        this.setState({
+            ingredients: updatedIngredients,
+            totalPrice: updatedPrice
+        });
+    }
+
+    removeIngredientHandler = (type) => {
+        const oldIngredientCount = this.state.ingredients[type];
+        const updatedIngredientCount = oldIngredientCount - 1;
+        const updatedIngredients = {...this.state.ingredients};
+        updatedIngredients[type] = updatedIngredientCount;
+
+        const priceAddition = INGREDIENTS_PRICES[type];
+        const oldPrice = this.state.totalPrice;
+        const updatedPrice = oldPrice - priceAddition;
+
+        this.setState({
+            ingredients: updatedIngredients,
+            totalPrice: updatedPrice
+        });
     }
 
     render() {
         return (
             <Auxiliary>
                 <Burger ingredients={this.state.ingredients}/>
-                <BuildControls />
+                <BuildControls
+                    ingredientAdded={this.addIngredientHandler}
+                    ingredientRemoved={this.removeIngredientHandler}/>
             </Auxiliary>
         );
     }
