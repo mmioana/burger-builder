@@ -24,7 +24,8 @@ class BurgerBuilder extends Component {
             totalPrice: 4.00,
             purchasable: false,
             purchasing: false,
-            loading: false
+            loading: false,
+            error: false
         };
     }
 
@@ -140,6 +141,11 @@ class BurgerBuilder extends Component {
                 this.setState({
                     ingredients: response.data
                 });
+            })
+            .catch(error => {
+                this.setState({
+                    error: true
+                });
             });
     }
 
@@ -152,7 +158,9 @@ class BurgerBuilder extends Component {
         }
 
         let orderSummary = null;
-        let burger = <Spinner/>;
+        let burger = this.state.error ?
+            <p style={{textAlign: 'center'}}>Network error encountered while fetching ingredients.</p> :
+            <Spinner/>;
 
         if (this.state.ingredients) {
 
