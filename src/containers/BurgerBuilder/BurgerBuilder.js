@@ -136,8 +136,9 @@ class BurgerBuilder extends Component {
     componentDidMount() {
         axios.get('/ingredients.json')
             .then(response => {
+
                 this.setState({
-                    ingredients: response
+                    ingredients: response.data
                 });
             });
     }
@@ -150,19 +151,17 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
 
-        let orderSummary=(<OrderSummary
-            continue={this.purchaseContinueHandler}
-            cancel={this.purchaseCancelHandler}
-            price={this.state.totalPrice}
-            ingredients={this.state.ingredients}/>);
-
-        if (this.state.loading) {
-            orderSummary=(<Spinner/>);
-        }
-
+        let orderSummary = null;
         let burger = <Spinner/>;
 
         if (this.state.ingredients) {
+
+            orderSummary=(<OrderSummary
+                continue={this.purchaseContinueHandler}
+                cancel={this.purchaseCancelHandler}
+                price={this.state.totalPrice}
+                ingredients={this.state.ingredients}/>);
+
             burger = (
                 <Auxiliary>
                     <Burger ingredients={this.state.ingredients}/>
@@ -175,6 +174,10 @@ class BurgerBuilder extends Component {
                         ingredientRemoved={this.removeIngredientHandler}/>
                 </Auxiliary>
             );
+        }
+
+        if (this.state.loading) {
+            orderSummary =(<Spinner/>);
         }
 
         return (
